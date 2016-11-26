@@ -2,6 +2,8 @@
 
 This is currently in beta! Feedback is very much welcome.
 
+IMPORTANT NOTE: As pointed out in the [AWS documentation](http://docs.aws.amazon.com/lambda/latest/dg/env_variables.html) for storing sensible the `Ciphertext` should be stored in the environment variables. This tutorial doesn't go into that yet, but we will update it soon accordingly.
+
 # Install
 
 ```bash
@@ -35,3 +37,5 @@ In your `serverless.yaml` you can use the file variable syntax to import the sec
 Whenever you want to deploy there needs to be the unencrypted version of the secrets file available otherwise the plugin will prevent the deployment.
 
 # Example
+
+You can check out a full example in the Serverless Examples repository: [serverless/examples/aws-node-env-variables-encrypted-in-a-file](https://github.com/serverless/examples/tree/master/aws-node-env-variables-encrypted-in-a-file).
