@@ -61,7 +61,7 @@ class ServerlessPlugin {
       const credentialFileName = `secrets.${this.options.stage}.yml`;
       const encryptedCredentialFileName = `${credentialFileName}.encrypted`;
       const secretsPath = path.join(servicePath, customPath, credentialFileName);
-      const encryptedCredentialsPath = path.join(servicePath, encryptedCredentialFileName);
+      const encryptedCredentialsPath = path.join(servicePath, customPath, encryptedCredentialFileName);
 
       fs.createReadStream(secretsPath)
         .on('error', reject)
@@ -83,7 +83,7 @@ class ServerlessPlugin {
       const credentialFileName = `secrets.${this.options.stage}.yml`;
       const encryptedCredentialFileName = `${credentialFileName}.encrypted`;
       const secretsPath = path.join(servicePath, customPath, credentialFileName);
-      const encryptedCredentialsPath = path.join(servicePath, encryptedCredentialFileName);
+      const encryptedCredentialsPath = path.join(servicePath, customPath, encryptedCredentialFileName);
 
       fs.createReadStream(encryptedCredentialsPath)
         .on('error', reject)
@@ -103,7 +103,7 @@ class ServerlessPlugin {
       const servicePath = this.serverless.config.servicePath;
       const customPath = this.customPath;
       const credentialFileName = `secrets.${this.options.stage}.yml`;
-      const secretsPath = path.join(servicePath, customPath, credentialFileName);
+      const secretsPath = path.join(servicePath, customPath, customPath, credentialFileName);
       fs.access(secretsPath, fs.F_OK, (err) => {
         if (err) {
           reject(`Couldn't find the secrets file for this stage: ${credentialFileName}`);
