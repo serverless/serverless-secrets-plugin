@@ -103,7 +103,7 @@ class ServerlessPlugin {
       const servicePath = this.serverless.config.servicePath;
       const customPath = this.customPath;
       const credentialFileName = `secrets.${this.options.stage}.yml`;
-      const secretsPath = path.join(servicePath, customPath, customPath, credentialFileName);
+      const secretsPath = path.join(servicePath, customPath, credentialFileName);
       fs.access(secretsPath, fs.F_OK, (err) => {
         if (err) {
           reject(`Couldn't find the secrets file for this stage: ${credentialFileName}`);
