@@ -64,7 +64,7 @@ class ServerlessPlugin {
         .pipe(fs.createWriteStream(encryptedCredentialsPath))
         .on('error', reject)
         .on('close', () => {
-          this.serverless.cli.log(`Sucessfully encrypted '${credentialFileName}' to '${encryptedCredentialFileName}'`);
+          this.serverless.cli.log(`Successfully encrypted '${credentialFileName}' to '${encryptedCredentialFileName}'`);
           resolve();
         });
     });
@@ -85,7 +85,7 @@ class ServerlessPlugin {
         .pipe(fs.createWriteStream(secretsPath))
         .on('error', reject)
         .on('close', () => {
-          this.serverless.cli.log(`Sucessfully encrypted '${encryptedCredentialFileName}' to '${credentialFileName}'`);
+          this.serverless.cli.log(`Successfully decrypted '${encryptedCredentialFileName}' to '${credentialFileName}'`);
           resolve();
         });
     });
