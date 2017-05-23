@@ -61,12 +61,12 @@ class ServerlessPlugin {
   }
 
   /**
-   * Use a dot-delimited string to access properties of this.serverless.service
+   * Use a dot-delimited string to access properties of this.serverless.service.custom
    * @param key
    * @returns {*}
    */
   getConfig(key) {
-    return this.getNested(key.split('.'), this.serverless.service)
+    return this.getNested(key.split('.'), this.serverless.service.custom)
   }
 
   /**
@@ -77,7 +77,7 @@ class ServerlessPlugin {
     const servicePath = this.serverless.config.servicePath;
     const credentialFileName = `secrets.${this.options.stage}.yml`;
     const encryptedCredentialFileName = `${credentialFileName}.encrypted`;
-    const config = this.getConfig('custom.pluginConfig.secrets')
+    const config = this.getConfig('pluginConfig.secrets')
 
     return {
       secrets:   path.join(servicePath, config.localPath, credentialFileName),
@@ -86,9 +86,9 @@ class ServerlessPlugin {
   }
 
   encrypt() {
-    return new BbPromise((resolve, reject) => {
-      const credentialPaths = this.getCredentialPaths()
+    const credentialPaths = this.getCredentialPaths()
 
+    return new BbPromise((resolve, reject) => {
       fs.createReadStream(credentialPaths.secrets)
         .on('error', reject)
         .pipe(crypto.createCipher(algorithm, this.options.password))
@@ -103,9 +103,9 @@ class ServerlessPlugin {
   }
 
   decrypt() {
-    return new BbPromise((resolve, reject) => {
-      const credentialPaths = this.getCredentialPaths()
+    const credentialPaths = this.getCredentialPaths()
 
+    return new BbPromise((resolve, reject) => {
       fs.createReadStream(credentialPaths.encrypted)
         .on('error', reject)
         .pipe(crypto.createDecipher(algorithm, this.options.password))
@@ -120,9 +120,9 @@ class ServerlessPlugin {
   }
 
   checkFileExists() {
-    return new BbPromise((resolve, reject) => {
-      const credentialPaths = this.getCredentialPaths()
+    const credentialPaths = this.getCredentialPaths()
 
+    return new BbPromise((resolve, reject) => {
       fs.access(credentialPaths.secrets, fs.F_OK, (err) => {
         if (err) {
           reject(`Couldn't find the secrets file for this stage: ${path.basename(credentialPaths.secrets)} (looking in ${path.dirname(credentialPaths.secrets)})`);
