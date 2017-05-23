@@ -49,56 +49,83 @@ class ServerlessPlugin {
     };
   }
 
-  encrypt() {
-    return new BbPromise((resolve, reject) => {
-      const servicePath = this.serverless.config.servicePath;
-      const credentialFileName = `secrets.${this.options.stage}.yml`;
-      const encryptedCredentialFileName = `${credentialFileName}.encrypted`;
-      const secretsPath = path.join(servicePath, credentialFileName);
-      const encryptedCredentialsPath = path.join(servicePath, encryptedCredentialFileName);
+  /**
+   * Retrieve a nested value from an object using an array of path values
+   * Return null in the case of a non-existent path
+   * As described at https://medium.com/javascript-inside/safely-accessing-deeply-nested-values-in-javascript-99bf72a0855a
+   * @param p
+   * @param o
+   */
+  getNested (p, o) {
+    return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o)
+  }
 
-      fs.createReadStream(secretsPath)
+  /**
+   * Use a dot-delimited string to access properties of this.serverless.service.custom
+   * @param key
+   * @returns {*}
+   */
+  getConfig(key) {
+    return this.getNested(key.split('.'), this.serverless.service.custom)
+  }
+
+  /**
+   * Return an object populated with paths to the credentials
+   * @returns {{secrets: string, encrypted: string}}
+   */
+  getCredentialPaths() {
+    const servicePath = this.serverless.config.servicePath;
+    const credentialFileName = `secrets.${this.options.stage}.yml`;
+    const encryptedCredentialFileName = `${credentialFileName}.encrypted`;
+    const config = this.getConfig('pluginConfig.secrets')
+
+    return {
+      secrets:   path.join(servicePath, config.localPath, credentialFileName),
+      encrypted: path.join(servicePath, config.localPath, encryptedCredentialFileName)
+    }
+  }
+
+  encrypt() {
+    const credentialPaths = this.getCredentialPaths()
+
+    return new BbPromise((resolve, reject) => {
+      fs.createReadStream(credentialPaths.secrets)
         .on('error', reject)
         .pipe(crypto.createCipher(algorithm, this.options.password))
         .on('error', reject)
-        .pipe(fs.createWriteStream(encryptedCredentialsPath))
+        .pipe(fs.createWriteStream(credentialPaths.encrypted))
         .on('error', reject)
         .on('close', () => {
-          this.serverless.cli.log(`Sucessfully encrypted '${credentialFileName}' to '${encryptedCredentialFileName}'`);
+          this.serverless.cli.log(`Sucessfully encrypted '${path.basename(credentialPaths.secrets)}' to '${path.basename(credentialPaths.encrypted)}'`);
           resolve();
         });
     });
   }
 
   decrypt() {
-    return new BbPromise((resolve, reject) => {
-      const servicePath = this.serverless.config.servicePath;
-      const credentialFileName = `secrets.${this.options.stage}.yml`;
-      const encryptedCredentialFileName = `${credentialFileName}.encrypted`;
-      const secretsPath = path.join(servicePath, credentialFileName);
-      const encryptedCredentialsPath = path.join(servicePath, encryptedCredentialFileName);
+    const credentialPaths = this.getCredentialPaths()
 
-      fs.createReadStream(encryptedCredentialsPath)
+    return new BbPromise((resolve, reject) => {
+      fs.createReadStream(credentialPaths.encrypted)
         .on('error', reject)
         .pipe(crypto.createDecipher(algorithm, this.options.password))
         .on('error', reject)
-        .pipe(fs.createWriteStream(secretsPath))
+        .pipe(fs.createWriteStream(credentialPaths.secrets))
         .on('error', reject)
         .on('close', () => {
-          this.serverless.cli.log(`Sucessfully encrypted '${encryptedCredentialFileName}' to '${credentialFileName}'`);
+          this.serverless.cli.log(`Sucessfully decrypted '${path.basename(credentialPaths.encrypted)}' to '${path.basename(credentialPaths.secrets)}'`);
           resolve();
         });
     });
   }
 
   checkFileExists() {
+    const credentialPaths = this.getCredentialPaths()
+
     return new BbPromise((resolve, reject) => {
-      const servicePath = this.serverless.config.servicePath;
-      const credentialFileName = `secrets.${this.options.stage}.yml`;
-      const secretsPath = path.join(servicePath, credentialFileName);
-      fs.access(secretsPath, fs.F_OK, (err) => {
+      fs.access(credentialPaths.secrets, fs.F_OK, (err) => {
         if (err) {
-          reject(`Couldn't find the secrets file for this stage: ${credentialFileName}`);
+          reject(`Couldn't find the secrets file for this stage: ${path.basename(credentialPaths.secrets)} (looking in ${path.dirname(credentialPaths.secrets)})`);
         } else {
           resolve();
         }

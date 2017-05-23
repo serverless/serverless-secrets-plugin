@@ -36,6 +36,19 @@ In your `serverless.yaml` you can use the file variable syntax to import the sec
 
 Whenever you want to deploy there needs to be the unencrypted version of the secrets file available otherwise the plugin will prevent the deployment.
 
+## Customisation
+
+If you wish to store your credentials outside your project's root, add the following to `serverless.yml`:
+
+```yml
+custom:
+  pluginConfig:
+    secrets:
+      localPath: "./relative/path/to/dir"
+```
+
+e.g. `localPath: "./config/serverless"` would locate your credentials at `./config/serverless/secrets.{stage}.yml`
+
 # Example
 
 You can check out a full example in the Serverless Examples repository: [serverless/examples/aws-node-env-variables-encrypted-in-a-file](https://github.com/serverless/examples/tree/master/aws-node-env-variables-encrypted-in-a-file).
