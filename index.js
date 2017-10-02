@@ -7,7 +7,7 @@ const BbPromise = require('bluebird');
 
 const algorithm = 'aes-256-cbc';
 
-class ServerlessPlugin {
+class ServerlessSecretsPlugin {
   constructor(serverless, options) {
     this.serverless = serverless;
     this.options = options;
@@ -107,4 +107,4 @@ class ServerlessPlugin {
   }
 }
 
-module.exports = ServerlessPlugin;
+module.exports = ServerlessSecretsPlugin;
