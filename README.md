@@ -1,8 +1,10 @@
 # Serverless Credentials Plugin
 
-This is currently in beta! Feedback is very much welcome.
+IMPORTANT NOTE: As pointed out in the [AWS documentation](http://docs.aws.amazon.com/lambda/latest/dg/env_variables.html) for storing sensible information Amazon recommends to use AWS KMS instead of environment variables like this plugin.
 
-IMPORTANT NOTE: As pointed out in the [AWS documentation](http://docs.aws.amazon.com/lambda/latest/dg/env_variables.html) for storing sensible the `Ciphertext` should be stored in the environment variables. This tutorial doesn't go into that yet, but we will update it soon accordingly.
+[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
+[![npm version](https://badge.fury.io/js/serverless-secrets-plugin.svg)](https://badge.fury.io/js/serverless-secrets-plugin)
+[![license](https://img.shields.io/npm/l/serverless-secrets-plugin.svg)](https://www.npmjs.com/package/serverless-secrets-plugin)
 
 # Install
 
