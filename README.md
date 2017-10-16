@@ -24,6 +24,12 @@ EMAIL_SERVICE_API_KEY: DEV_API_EXAMPLE_KEY_12
 SESSION_KEY: DEV_SESSION_EXAMPLE_KEY_12
 ```
 
+You can also provide a path prefix if you like to keep your secrets in a different directory e.g.
+```yml
+custom:
+  secretsFilePathPrefix: config
+```
+
 Encrypt the secrets file for the desired stage by running
 
 ```bash
