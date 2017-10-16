@@ -45,7 +45,7 @@ class ServerlessSecretsPlugin {
     this.hooks = {
       'encrypt:encrypt': this.encrypt.bind(this),
       'decrypt:decrypt': this.decrypt.bind(this),
-      'before:deploy:cleanup': this.checkFileExists.bind(this),
+      'package:cleanup': this.checkFileExists.bind(this),
     };
   }
 
