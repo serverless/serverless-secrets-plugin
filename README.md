@@ -1,6 +1,6 @@
 # Serverless Credentials Plugin
 
-IMPORTANT NOTE: As pointed out in the [AWS documentation](http://docs.aws.amazon.com/lambda/latest/dg/env_variables.html) for storing sensible information Amazon recommends to use AWS KMS instead of environment variables like this plugin.
+IMPORTANT NOTE: As pointed out in the [AWS documentation](http://docs.aws.amazon.com/lambda/latest/dg/env_variables.html) for storing sensitive information Amazon recommends to use AWS KMS instead of environment variables like this plugin.
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![npm version](https://badge.fury.io/js/serverless-secrets-plugin.svg)](https://badge.fury.io/js/serverless-secrets-plugin)
